@@ -1,12 +1,12 @@
 import './App.css';
 import NavBar from '../components/Nav';
-import { CardList } from '../features/CardList';
+import { PostList } from '../features/PostList';
 
 function App() {
   return (
     <div>
       <NavBar />
-      <CardList />
+      <PostList />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Card(props) {
+export default function Post(props) {
     return (
         <div key={props.card.id} className="post">
             <span className="card-container">
