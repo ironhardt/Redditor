@@ -3,8 +3,9 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export const loadData = createAsyncThunk(
     'postList/loadData',
-    async (subreddit, thunkAPI) => {
-        const response = await fetch('https://www.reddit.com/r/javascript/hot.json')
+    async (path, thunkAPI) => {
+        const response = await fetch(`https://www.reddit.com/r/${path.sub}/${path.division}.json${path.after}`)
+        // https://iq.opengenus.org/get-list-of-posts-using-reddit-api/
         const json = await response.json()
         return json
     }
@@ -13,31 +14,32 @@ export const loadData = createAsyncThunk(
 export const postSlice = createSlice({
     name: 'postList',
     initialState: {
-        posts: ["has not ran"],
+        posts: [],
         isLoading: false,
-        hasError: false
+        hasError: false,
+        after: ''
     },
     reducers: {},
     extraReducers: {
         [loadData.pending]: (state, action) => {
-            console.log('Pending ran')
             state.isLoading = true
         },
         [loadData.fulfilled]: (state, action) => {
-            console.log('fulfilled ran')
-            console.log(action.payload)
             state.isLoading = false
-            state.posts = action.payload.data.children.map(post => post.data.title)
-
+            action.payload.data.children.map(post => {
+                state.posts.push(post)
+            })
+            state.after = `?after=${action.payload.data.after}`
         },
         [loadData.rejected]: (state, action) => {
-            console.log('rejected ran')
+
         }
     }
 })
 
 export const selectData = state => state.postList
 export const selectIsLoading = state => state.postList.isLoading
+export const selectPageAfter = state => state.postList.after
 
 
 
