@@ -15,17 +15,13 @@ export const postSlice = createSlice({
     name: 'postList',
     initialState: {
         posts: [],
-        isLoading: false,
-        hasError: false,
         after: ''
     },
     reducers: {},
     extraReducers: {
         [loadData.pending]: (state, action) => {
-            state.isLoading = true
         },
         [loadData.fulfilled]: (state, action) => {
-            state.isLoading = false
             action.payload.data.children.map(post => {
                 state.posts.push(post)
             })
@@ -38,7 +34,6 @@ export const postSlice = createSlice({
 })
 
 export const selectData = state => state.postList
-export const selectIsLoading = state => state.postList.isLoading
 export const selectPageAfter = state => state.postList.after
 
 

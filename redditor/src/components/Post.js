@@ -2,11 +2,11 @@ import React from "react";
 
 export default function Post(props) {
     return (
-        <div key={props.card.id} className="post">
-            <span className="card-container">
-                <h3 className="card-title">{props.post.name}</h3>
+        <div className="post">
+            <span className="post-container">
+                <h3 className="post-title">{props.title}</h3>
                 <div className="post-content">
-                    {props.card.content}
+                    {props.content}
                 </div>
             </span>
         </div>

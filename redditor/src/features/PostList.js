@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import { loadData, selectIsLoading, selectPageAfter } from './postSlice.js';
+import { loadData, selectPageAfter } from './postSlice.js';
 import Post from '../components/Post.js';
 import { useSelector } from 'react-redux';
 import { selectData } from './postSlice.js';
@@ -8,13 +8,10 @@ import { useDispatch } from 'react-redux';
 
 export const PostList = () => {
     const postList = useSelector(selectData)
-    const postsLoading = useSelector(selectIsLoading)
     const pageAfter = useSelector(selectPageAfter)
-    const postTitles = postList.posts.map(post => post.data.title)
-    console.log(pageAfter)
+    const posts = postList.posts.map(post => post.data.title)
 
     const dispatch = useDispatch()
-
 
     let page = {
         sub: 'wow',
@@ -29,7 +26,6 @@ export const PostList = () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
             if (scrollRef.current) return
             page.after = afterRef.current
-            console.log(page.after)
             dispatch(loadData(page))
             scrollRef.current = true
             setTimeout(() => scrollRef.current = false, 500)
@@ -54,11 +50,37 @@ export const PostList = () => {
         }
     }, [])
 
+    const sortPosts = postList.posts.map((post, index) => {
+        const { title, is_self, selftext, url, post_hint } = post.data
+        let content = null
 
+        if (is_self) {
+            content = selftext
+        } else {
+            switch (post_hint) {
+                case 'image':
+                    content = <img src={url} />
+                    break;
+                case 'link':
+                    content = <a href={url}>{url}</a>
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return (
+            <Post
+                key={index}
+                title={title}
+                content={content}
+            />
+        )
+    })
 
     return (
         <div>
-            {postTitles.map(post => <p>{post}</p>)}
+            {sortPosts}
         </div>
     )
 
