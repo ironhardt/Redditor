@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { selectData } from './postSlice.js';
 import { useDispatch } from 'react-redux';
 
+
 export const PostList = () => {
     const postList = useSelector(selectData)
     const pageAfter = useSelector(selectPageAfter)
@@ -51,7 +52,7 @@ export const PostList = () => {
     }, [])
 
     const sortPosts = postList.posts.map((post, index) => {
-        const { title, is_self, selftext, url, post_hint } = post.data
+        const { title, is_self, selftext, url, post_hint, secure_media } = post.data
         let content = null
 
         if (is_self) {
@@ -60,6 +61,19 @@ export const PostList = () => {
             switch (post_hint) {
                 case 'image':
                     content = <img src={url} />
+                    break;
+                case 'hosted:video':
+                    content = (
+                        <video loop muted preload="auto" controls>
+                            <source src={secure_media.reddit_video.fallback_url} />
+                        </video>)
+                    break;
+                case 'rich:video':
+                    let rawHTML = secure_media.oembed.html
+
+                    let videoPath = rawHTML.replace('<iframe', '').replace('></iframe>', '')
+                    //width="356" height="200" src="https://www.youtube.com/embed/eV_v5QQ5LLA?feature=oembed&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                    content = secure_media.oembed.html
                     break;
                 case 'link':
                     content = <a href={url}>{url}</a>
