@@ -15,7 +15,7 @@ export const PostList = () => {
     const dispatch = useDispatch()
 
     let page = {
-        sub: 'wow',
+        sub: 'videos',
         listing: 'hot',
         after: ''
     }
@@ -51,12 +51,19 @@ export const PostList = () => {
         }
     }, [])
 
+    const createMarkup = source => {
+        if (source.includes('iframe') && !source.includes('https://www.youtube.com/')) {
+            return null
+        }
+        return { __html: source }
+    }
+
     const sortPosts = postList.posts.map((post, index) => {
-        const { title, is_self, selftext, url, post_hint, secure_media } = post.data
+        const { title, is_self, selftext_html, url, post_hint, secure_media } = post.data
         let content = null
 
         if (is_self) {
-            content = selftext
+            content = <div dangerouslySetInnerHTML={createMarkup(selftext_html)}></div>
         } else {
             switch (post_hint) {
                 case 'image':
@@ -69,11 +76,9 @@ export const PostList = () => {
                         </video>)
                     break;
                 case 'rich:video':
-                    let rawHTML = secure_media.oembed.html
 
-                    let videoPath = rawHTML.replace('<iframe', '').replace('></iframe>', '')
-                    //width="356" height="200" src="https://www.youtube.com/embed/eV_v5QQ5LLA?feature=oembed&enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-                    content = secure_media.oembed.html
+
+                    content = <div dangerouslySetInnerHTML={createMarkup(secure_media.oembed.html)}></div>
                     break;
                 case 'link':
                     content = <a href={url}>{url}</a>
