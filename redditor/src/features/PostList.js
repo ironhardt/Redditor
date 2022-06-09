@@ -15,7 +15,7 @@ export const PostList = () => {
     const dispatch = useDispatch()
 
     let page = {
-        sub: 'videos',
+        sub: 'wow',
         listing: 'hot',
         after: ''
     }
@@ -59,7 +59,7 @@ export const PostList = () => {
     }
 
     const sortPosts = postList.posts.map((post, index) => {
-        const { title, is_self, selftext_html, url, post_hint, secure_media } = post.data
+        const { title, is_self, selftext_html, url, post_hint, secure_media, author, score, num_comments, permalink } = post.data
         let content = null
 
         if (is_self) {
@@ -92,6 +92,10 @@ export const PostList = () => {
             <Post
                 key={index}
                 title={title}
+                author={author}
+                score={score}
+                num_comments={num_comments}
+                comments={permalink}
                 content={content}
             />
         )
